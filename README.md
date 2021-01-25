@@ -12,3 +12,7 @@ Conteúdo do Erick Wendel na Live - Generators e Iterators na prática
 - **npm i chai@4**  - expect const { expect } = require('chai')
 - **npm i nyc@15**  - Coverage
 - **npm i sinon@9** - Mockar teste
+
+**Restaura os pacotes do package-lock.json**
+
+npm ci --silent

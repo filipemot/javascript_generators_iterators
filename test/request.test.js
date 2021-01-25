@@ -15,13 +15,14 @@ describe('Request helpers', function () {
   })
   afterEach(() => sandbox.restore())
 
-  it(`should throw a timeout error when the function has spent more than ${timeout}ms`, async () => {
+  it(`should be throw a timeout error when the function has spent more than ${timeout}ms`, async () => {
     const exceededTimeout = timeout + 10
     sandbox.stub(request, request.get.name)
       .callsFake(() => new Promise(r => setTimeout(r, exceededTimeout)));
 
-    const call = request.makeRequest({ url: 'https://testing.com', method: 'get', timeout });
-    await assert.rejects(call, { message: 'timeout at [https://testing.com] :(' })
+
+    const call = request.makeRequest({ url: 'testing.com', method: 'get', timeout });
+    await assert.rejects(call, { message: 'timeout at [testing.com] :(' })
 
   });
 
@@ -35,12 +36,12 @@ describe('Request helpers', function () {
       });
 
 
-    const call = () => request.makeRequest({ url: 'https://testing.com', method: 'get', timeout });
+    const call = () => request.makeRequest({ url: 'testing.com', method: 'get', timeout });
     await assert.doesNotReject(call())
     assert.deepStrictEqual(await call(), expected)
   });
 
-  it('should return a JSON object after a request', async () => {
+  it('should return a JSON object after request', async () => {
     const data = [
       Buffer.from('{ "ok": '),
       Buffer.from('"ok"'),
@@ -48,7 +49,6 @@ describe('Request helpers', function () {
     ]
 
     const expected = { ok: 'ok' }
-    
 
     const responseEvent = new Events()
     const httpEvent = new Events()
@@ -62,7 +62,7 @@ describe('Request helpers', function () {
       .returns(httpEvent)
 
 
-    const pendingPromise = request.get("https://testing.com")
+    const pendingPromise = request.get("testing.com")
 
     responseEvent.emit('data', data[0]);
     responseEvent.emit('data', data[1]);

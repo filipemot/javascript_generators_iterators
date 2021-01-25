@@ -1,41 +1,18 @@
-const Request = require("./request");
 
-async function scheduler() {
-    console.log('starting in...', new Date().toISOString())
-    const urls = [
-        { url: 'https://www.mercadobitcoin.net/api/BTC/ticker/', method: 'get' },
-        { url: 'https://www.NAO_EXISTE.net', method: 'get' },
-        { url: 'https://www.mercadobitcoin.net/api/BTC/orderbook/', method: 'get' },
-    ]
-        .map(data => ({
-            ...data,
-            timeout: 2000,
-        }))
-        .map(params => request.makeRequest(params))
+const Pagination = require('./pagination')
 
-
-    const results = await Promise.allSettled(urls)
-    const allSucceeded = []
-    const allFail = []
-
-    for (const { status, value, reason } of results) {
-        
-        if(status === 'rejected') {
-            allFail.push(reason)
-            continue;
-        }
-
-        allSucceeded.push(value)
-    }
-        
-    console.log({
-        allFail,
-        allSucceeded
+; (async () => {
+    const pagination = new Pagination()
+    // const firstPage = 3706
+    const firstPage = 770e3
+    // ultimo é por volta de 770K
+    const req = pagination.getPaginated({
+        url: 'https://www.mercadobitcoin.net/api/BTC/trades/',
+        page: firstPage
     })
+    
+    for await (const items of req) {
+        console.table(items)
+    }
 
-}
-
-
-const request = new Request()
-const PERIOD = 2000
-setInterval(scheduler, PERIOD);
+})()
